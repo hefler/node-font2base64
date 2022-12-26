@@ -1,5 +1,5 @@
-const fs = require('fs');
-const path = require('path');
+import { readFile, writeFile, stat as _stat, readdir, statSync, readdirSync } from 'fs';
+import { join, extname } from 'path';
 
 const isString = (value) => typeof value === 'string';
 
@@ -57,13 +57,13 @@ const promisify =
       });
     });
 
-const readFileAsync = promisify(fs.readFile);
+const readFileAsync = promisify(readFile);
 
-const writeFileAsync = promisify(fs.writeFile);
+const writeFileAsync = promisify(writeFile);
 
-const statAsync = promisify(fs.stat);
+const statAsync = promisify(_stat);
 
-const readdirAsync = promisify(fs.readdir);
+const readdirAsync = promisify(readdir);
 
 const readAllFilesAsync = async (fileOrPath, allowedExts) => {
   const files = [];
@@ -72,11 +72,11 @@ const readAllFilesAsync = async (fileOrPath, allowedExts) => {
       const stat = await statAsync(fp);
       if (stat.isDirectory()) {
         const subs = await readdirAsync(fp);
-        const subPaths = subs.map((s) => path.join(fp, s));
+        const subPaths = subs.map((s) => join(fp, s));
         const subFiles = await readAllFilesAsync(subPaths, allowedExts);
         files.push(...subFiles);
       } else {
-        if (allowedExts && allowedExts.includes(path.extname(fp))) files.push(fp);
+        if (allowedExts && allowedExts.includes(extname(fp))) files.push(fp);
       }
     } catch (e) {} // thing not exists
   });
@@ -88,14 +88,14 @@ const readAllFilesSync = (fileOrPath, allowedExts) => {
   const files = [];
   eachArray(fileOrPath, (fp) => {
     try {
-      const stat = fs.statSync(fp);
+      const stat = statSync(fp);
       if (stat.isDirectory()) {
-        const subs = fs.readdirSync(fp);
-        const subPaths = subs.map((s) => path.join(fp, s));
+        const subs = readdirSync(fp);
+        const subPaths = subs.map((s) => join(fp, s));
         const subFiles = readAllFilesSync(subPaths, allowedExts);
         files.push(...subFiles);
       } else {
-        if (allowedExts && allowedExts.includes(path.extname(fp))) files.push(fp);
+        if (allowedExts && allowedExts.includes(extname(fp))) files.push(fp);
       }
     } catch (e) {} // thing not exists
   });
@@ -103,7 +103,7 @@ const readAllFilesSync = (fileOrPath, allowedExts) => {
   return files;
 };
 
-module.exports = exports = {
+export {
   isString,
   isFunction,
   isNil,

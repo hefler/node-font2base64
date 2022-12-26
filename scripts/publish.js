@@ -1,8 +1,8 @@
-const { execSync } = require('child_process');
-const path = require('path');
-const _ = require('lodash');
-const fse = require('fs-extra');
-const { argv } = require('yargs');
+import { execSync } from 'child_process';
+import { resolve } from 'path';
+import { pick } from 'lodash';
+import { readFileSync, writeFileSync } from 'fs-extra';
+import { argv } from 'yargs';
 
 let { tag } = argv;
 if (!tag) throw Error('tag not supplied');
@@ -14,23 +14,23 @@ const VER_PLACEHOLDER = '0.0.0-PLACEHOLDER';
 const PUBLISH_DIR = 'publish';
 
 const parseJson = (dir) => {
-  const content = fse.readFileSync(dir).toString('utf-8');
+  const content = readFileSync(dir).toString('utf-8');
   return JSON.parse(content);
 };
 
 const writeJson = (dir, object) => {
-  fse.writeFileSync(dir, Buffer.from(JSON.stringify(object, null, 2), 'utf-8'));
+  writeFileSync(dir, Buffer.from(JSON.stringify(object, null, 2), 'utf-8'));
 };
 
 const getAbsPath = (filename) => {
-  return path.resolve(__dirname, '../', filename);
+  return resolve(__dirname, '../', filename);
 };
 
 execSync(`mkdir -p ${getAbsPath(PUBLISH_DIR)}`);
 const currpj = parseJson(getAbsPath('package.json'));
 if (currpj['version'] === VER_PLACEHOLDER) currpj['version'] = tag;
 
-const newpj = _.pick(currpj, [
+const newpj = pick(currpj, [
   'name',
   'version',
   'description',
