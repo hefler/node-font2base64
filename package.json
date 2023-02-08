@@ -1,7 +1,7 @@
 {
   "name": "node-font2base64",
   "description": "Convert font to base64 url or src, and to inject src into style files",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "author": "Junmin Ahn",
   "license": "MIT",
   "keywords": [
@@ -47,10 +47,10 @@
     "lodash": "^4.17.21",
     "mocha": "^10.1.0",
     "prettier": "^2.7.1",
-    "promise-synchronizer": "^1.1.8",
+    "promise-synchronizer": "^3.0.0",
     "yargs": "^17.6.0"
   },
   "peerDependencies": {
-    "promise-synchronizer": "^1.1.8"
+    "promise-synchronizer": "^3.0.0"
   }
 }
